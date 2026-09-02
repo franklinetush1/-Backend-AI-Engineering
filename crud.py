@@ -56,10 +56,58 @@ def add_task(task_data: CreateTask):
     
     new_task = {
         "id": post_id,
-        "title": task_data.title.strip,
+        "title": task_data.title.strip(),
         "done": False
     }
     
     tasks.append(new_task)
     return new_task
+
+class CreateTask(BaseModel):
+    title: Optional[str] = None
+    done: Optional[bool] = None
+
+@app.put("/tasks/{task_id}")
+def update_task(task_id: int, update: CreateTask):
+    task = None
+    for task in tasks:
+        if task["id"] == task_id:
+            task = task
+            break
+
+    if task is None:
+        return JSONResponse(
+            status_code=404,
+            content={"error": f"Task {task_id} not found"}
+        )
+
+    if update.title is not None and not update.title.strip():
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Title cannot be empty"}
+        )
+
+    if update.title is not None:
+        task["title"] = update.title.strip()
+    if update.done is not None:
+        task["done"] = update.done
+
+    return task
+
+@app.delete("/tasks/{task_id}", status_code=204)
+def delete_task(task_id: int):
+    task_idx = None
+    for idx, task in enumerate(tasks):
+        if task["id"] == task_id:
+            task_idx = idx
+            break
+
+    if task_idx is None:
+        return JSONResponse(
+            status_code=404,
+            content={"error": f"Task {task_id} not found"}
+        )
+
+    tasks.pop(task_idx)
+    return None
 
