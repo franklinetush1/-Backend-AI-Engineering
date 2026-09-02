@@ -40,12 +40,12 @@ def get_task(task_id: int):
     )
 
 
-class TaskCreate(BaseModel):
+class CreateTask(BaseModel):
     title: Optional[str] = None 
 
 
 @app.post("/tasks", status_code=201)
-def add_task(task_data: TaskCreate):
+def add_task(task_data: CreateTask):
     if task_data.title is None or not task_data.title.strip():
         return JSONResponse(
             status_code=400, 
@@ -62,3 +62,4 @@ def add_task(task_data: TaskCreate):
     
     tasks.append(new_task)
     return new_task
+
