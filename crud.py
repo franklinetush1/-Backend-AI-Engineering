@@ -70,9 +70,9 @@ class CreateTask(BaseModel):
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int, update: CreateTask):
     task = None
-    for task in tasks:
-        if task["id"] == task_id:
-            task = task
+    for tsk in tasks:
+        if tsk["id"] == task_id:
+            task = tsk
             break
 
     if task is None:
